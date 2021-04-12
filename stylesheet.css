@@ -26,9 +26,6 @@ h1 {
 	border-width: 1px;
 	margin: -1px; /* The squares are calculated EXACTLY to fit so if 1px is added
 								1px has to be subtracted somewhere else in size */
-}
-
-.inner-squares p {
-	font-size: 8.5em;
+	font-size: 7em;
 	text-align: center;
 }
