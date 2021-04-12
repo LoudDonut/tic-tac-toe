@@ -1,0 +1,34 @@
+html {
+	background-color: #111111;
+	color: #EEEEEE;
+}
+
+h1 {
+	font-size: 5em;
+	width: 5em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.gameboard {
+	display: flex;
+	flex-wrap: wrap;
+	background-color: #777777;
+	width: 25em;
+	height: 25em;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.inner-squares {
+	border-style: solid;
+	border-color: #EEEEEE;
+	border-width: 1px;
+	margin: -1px; /* The squares are calculated EXACTLY to fit so if 1px is added
+								1px has to be subtracted somewhere else in size */
+}
+
+.inner-squares p {
+	font-size: 8.5em;
+	text-align: center;
+}
