@@ -1,8 +1,10 @@
 const gameBoard = (function() {
-	let board = ["X", "O", "X",
+	let board = ["O", "X", "O",
 				"O", "X", "O",
 				"X", "O", "X"
 	]
+
+	let winner = checkAlignments(board);
 	
 	function putMark(player) {
 		const gridCells = document.querySelectorAll(".inner-squares");
@@ -58,8 +60,63 @@ const gameBoard = (function() {
 		};
 		generateGrid();
 	}
+
+	function checkAlignments(board) {
+		//horizontal count
+		const boardLength = board.length;
+		let winner = false;
+		let xCount = 0;
+		let oCount = 0;
+		
+		for (let row = 0; row < boardLength; row += 3) {
+			for (let cell = row; cell < row + 3; cell++) {
+				addFoundMarks(board[cell]);
+			}
+			checkWinCondition(xCount, oCount);
+			if (winner === true) break;
+		}
 	
-	return {putMark, generateBoard: GenerateBoard};
+		//Vertical count
+		for (let column = 0; column < 3 && winner === false; column++) {
+			for (let cell = column; cell < column + 7; cell += 3) {
+				addFoundMarks(board[cell]);
+			}
+			checkWinCondition(xCount, oCount);
+			if (winner === true) break;
+		}
+		//Diagonal count
+		for (let i = 0; i < boardLength && winner === false; i += 4) {
+			addFoundMarks(board[i]);
+		}
+		checkWinCondition(xCount, oCount);
+	
+		for (i = 2; i < boardLength - 2 && winner === false; i += 2) {
+			console.log(board[i]);
+			addFoundMarks(board[i]);
+		}
+		checkWinCondition(xCount, oCount);
+		
+		return winner;
+	
+		function addFoundMarks (mark) {
+			if (mark === "X") {
+				xCount += 1;
+			} else if (mark === "O") {
+				oCount += 1;
+			}
+		}
+	
+		function checkWinCondition(xAmount, oAmount) {
+			if (xAmount != 3 && oAmount != 3) {
+				xCount = 0;
+				oCount = 0;
+			} else {
+				winner = true;
+			}
+		}
+	}
+	
+	return {putMark, generateBoard: GenerateBoard, winner};
 })();
 
 function createPlayer(player) {
@@ -71,6 +128,8 @@ const playerTwo = createPlayer("player2");
 
 gameBoard.generateBoard(".gameboard");
 gameBoard.putMark(playerOne.player);
+
+console.log(gameBoard.winner);
 
 /*let winner = false;
 let turn = 1;
@@ -92,59 +151,3 @@ while (winner === false) {
 //then he puts a mark down
 //if winning condition is accomplished
 //then declare the winner and stop
-
-
-//what are the winning conditions?
-function checkAlignments() {
-	let board = ["X", "O", "X",
-				"O", "X", "O",
-				"X", "O", "X"
-	]
-	
-	//horizontal count
-	const boardLength = board.length;
-	let winner = false;
-	let horizontalX = 0;
-	let horizontalO = 0;
-	
-	for (let row = 0; row < boardLength; row += 3) {
-		for (let cell = row; cell < row + 3; cell++) {
-			const addFoundMarks = function (mark) {
-				if (mark === "X") {
-					horizontalX += 1;
-				} else if (mark === "O") {
-					horizontalO += 0;
-				}
-			};
-			addFoundMarks(board[cell]);
-		}
-		if (horizontalX != 3) {
-			horizontalX = 0;
-		} else {
-			winner = true;
-		}
-	}
-	console.log(horizontalX);
-
-	//vertical count
-	let verticalX = 0;
-	for (let column = 0; column < 3; column++) {
-		console.log("column: " + column);
-		for (let cell = column; cell < column + 7; cell += 3) {
-			console.log("cell: " + cell);
-		}
-	}
-	console.log(verticalX);
-
-	//diagonal count
-	let diagonalX = 0;
-
-	for (let i = 0; i < boardLength; i += 4) {
-		console.log("diagonal: " + i);
-	}
-	for (i = 2; i < boardLength - 2; i += 2) {
-		console.log("diagonal: " + i);
-	}
-	console.log(diagonalX);
-}
-checkAlignments();
