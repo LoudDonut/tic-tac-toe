@@ -22,10 +22,31 @@ h1 {
 
 .inner-squares {
 	border-style: solid;
-	border-color: #EEEEEE;
+	border-color: #111111;
 	border-width: 1px;
 	margin: -1px; /* The squares are calculated EXACTLY to fit so if 1px is added
 								1px has to be subtracted somewhere else in size */
 	font-size: 7em;
 	text-align: center;
+}
+
+.start-game {
+	border-style: none;
+}
+
+.player1-turn { /*will light up on player turn */
+	background-color: #EEEEEE;
+	position: fixed;
+	top: 25%;
+	width: 10em;
+	height: 10em;
+}
+
+.player2-turn {
+	background-color: #EEEEEE;
+	position: fixed;
+	top: 25%;
+	right: 0px;
+	width: 10em;
+	height: 10em;
 }
