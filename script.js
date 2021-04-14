@@ -69,8 +69,13 @@ const gameBoard = (function() {
 			if (xAmount != 3 && oAmount != 3) {
 				xCount = 0;
 				oCount = 0;
-			} else {
+			} else if (xCount === 3) {
 				winner = true;
+				return "X";
+			}
+			else if (xCount === 3) {
+				winner = true;
+				return "O";
 			}
 		}
 
@@ -105,9 +110,9 @@ const gameBoard = (function() {
 		for (i = 2; i < boardLength - 2 && winner === false; i += 2) {
 			addFoundMarks(board[i]);
 		}
-		checkWinCondition(xCount, oCount);
+		let victor = checkWinCondition(xCount, oCount);
 		
-		return winner;
+		return [winner, victor];
 	}
 	
 	return {putMark, generateBoard, checkAlignments};
@@ -143,16 +148,18 @@ startButton.addEventListener("click", () => {
 	const gridCells = document.querySelectorAll(".inner-squares");
 	gridCells.forEach(cell => {
 		function useTurn(e) {
-	
 			let indexNumber = e.target.dataset.indexNumber;
 			gameBoard.putMark(indexNumber, cell);
 	
 			round++
 			winner = gameBoard.checkAlignments();
-			console.log(winner);
-			if (winner === true) game = false;
-
+			console.log(winner[0]);
 			cell.removeEventListener("click", useTurn);
+
+			if (winner[0] === true) {
+				cell.parentNode.innerHTML += '';
+				console.log(winner[1] + " Wins!");
+			}
 		}
 		cell.addEventListener("click", useTurn);
 	});
