@@ -1,32 +1,26 @@
 const gameBoard = (function() {
-	let board = ["O", "X", "O",
-				"O", "X", "O",
-				"X", "O", "X"
+	let board = ["", "", "",
+				"", "", "",
+				"", "", ""
 	]
 
-	let winner = checkAlignments(board);
+	let switchTurn = true;
 	
-	function putMark(player) {
-		const gridCells = document.querySelectorAll(".inner-squares");
-		gridCells.forEach(cell => {
-			cell.addEventListener("click", (e) => {
-				let selectionIndex = e.target.dataset.indexNumber;
-				
-				if (player === "player1") {
-					board[selectionIndex] = "X";
-					cell.textContent = "X";
-					cell.style.color = "#00AACC"
-				} else {
-					board[selectionIndex] = "O";
-					cell.textContent = "O";
-					cell.style.color = "#AA0000"
-				}
-	
-			});
-		});
+	function putMark(indexNumber, element) {
+		if (switchTurn === true) {
+			board[indexNumber] = "X";
+			element.textContent = "X";
+			element.style.color = "#00AACC"
+			switchTurn = false;
+		} else {
+			board[indexNumber] = "O";
+			element.textContent = "O";
+			element.style.color = "#AA0000"
+			switchTurn = true;
+		}
 	}
 
-	function GenerateBoard(selector) {
+	function generateBoard(selector) {
 		const emptyBoard = document.querySelector(selector);
 		const width = emptyBoard.offsetWidth;
 		const height = emptyBoard.offsetHeight;
@@ -61,8 +55,26 @@ const gameBoard = (function() {
 		generateGrid();
 	}
 
-	function checkAlignments(board) {
-		//horizontal count
+	function checkAlignments() {
+
+		function addFoundMarks (mark) {
+			if (mark === "X") {
+				xCount += 1;
+			} else if (mark === "O") {
+				oCount += 1;
+			}
+		}
+	
+		function checkWinCondition(xAmount, oAmount) {
+			if (xAmount != 3 && oAmount != 3) {
+				xCount = 0;
+				oCount = 0;
+			} else {
+				winner = true;
+			}
+		}
+
+		//Horizontal count
 		const boardLength = board.length;
 		let winner = false;
 		let xCount = 0;
@@ -91,32 +103,14 @@ const gameBoard = (function() {
 		checkWinCondition(xCount, oCount);
 	
 		for (i = 2; i < boardLength - 2 && winner === false; i += 2) {
-			console.log(board[i]);
 			addFoundMarks(board[i]);
 		}
 		checkWinCondition(xCount, oCount);
 		
 		return winner;
-	
-		function addFoundMarks (mark) {
-			if (mark === "X") {
-				xCount += 1;
-			} else if (mark === "O") {
-				oCount += 1;
-			}
-		}
-	
-		function checkWinCondition(xAmount, oAmount) {
-			if (xAmount != 3 && oAmount != 3) {
-				xCount = 0;
-				oCount = 0;
-			} else {
-				winner = true;
-			}
-		}
 	}
 	
-	return {putMark, generateBoard: GenerateBoard, winner};
+	return {putMark, generateBoard, checkAlignments};
 })();
 
 function createPlayer(player) {
@@ -126,28 +120,41 @@ function createPlayer(player) {
 const playerOne = createPlayer("player1");
 const playerTwo = createPlayer("player2");
 
-gameBoard.generateBoard(".gameboard");
-gameBoard.putMark(playerOne.player);
+const gameContainer = document.querySelector(".gameboard");
+const welcomeMessage = document.createElement("p");
+const startButton = document.createElement("button");
 
-console.log(gameBoard.winner);
+welcomeMessage.setAttribute("class", "welcome-message");
+welcomeMessage.textContent = "Welcome to tic tac toe, press start to play!";
+startButton.setAttribute("class", ".start-game");
+startButton.textContent = "Start Game"
 
-/*let winner = false;
-let turn = 1;
-while (winner === false) {
+gameContainer.appendChild(welcomeMessage);
+gameContainer.appendChild(startButton);
+
+startButton.addEventListener("click", () => {
+
+	gameContainer.removeChild(welcomeMessage);
+	gameContainer.removeChild(startButton);
+	gameBoard.generateBoard(".gameboard");
+
+	let game = true;;
+	let round = 0;
+	const gridCells = document.querySelectorAll(".inner-squares");
+	gridCells.forEach(cell => {
+		function useTurn(e) {
 	
-	if (turn === 1) {
-		gameBoard.putMark(playerOne);
-		turn = 0;
-	} else {
-		gameBoard.putMark(playerTwo);
-	}
-	winner = true;
-}*/
+			let indexNumber = e.target.dataset.indexNumber;
+			gameBoard.putMark(indexNumber, cell);
+	
+			round++
+			winner = gameBoard.checkAlignments();
+			console.log(winner);
+			if (winner === true) game = false;
 
-//the game starts
-//a player gets turn
-//the player puts his mark down
-//the other player gets his turn
-//then he puts a mark down
-//if winning condition is accomplished
-//then declare the winner and stop
+			cell.removeEventListener("click", useTurn);
+		}
+		cell.addEventListener("click", useTurn);
+	});
+
+});
