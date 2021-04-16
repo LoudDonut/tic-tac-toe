@@ -34,19 +34,38 @@ h1 {
 	border-style: none;
 }
 
-.player1-turn { /*will light up on player turn */
+.player-one-side { /*will light up on player turn */
+	color: #000000;
 	background-color: #EEEEEE;
-	position: fixed;
+	position: absolute;
 	top: 25%;
 	width: 10em;
 	height: 10em;
 }
 
-.player2-turn {
+.player-two-side {
+	color: #000000;
 	background-color: #EEEEEE;
-	position: fixed;
+	position: absolute;
 	top: 25%;
 	right: 0px;
 	width: 10em;
 	height: 10em;
+}
+
+.vs {
+	color: black;
+	background-color: #EEEEEE;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	bottom: 0px;
+	width: 10em;
+	height: 10em;
+}
+
+.restart {
+	border-style: none;
+	background-color: #990099;
+	color: #EEEEEE;
 }

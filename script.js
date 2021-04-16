@@ -2,10 +2,22 @@ const gameBoard = (function() {
 	let board = ["", "", "",
 				"", "", "",
 				"", "", ""
-	]
+	];
 
 	let switchTurn = true;
 	
+	function clear(element, round) {
+		if (checkAlignments()[0] === true || round === 9) {
+			board = ["", "", "",
+					"", "", "",
+					"", "", ""];
+			element.forEach(cell => {
+				cell.textContent = "";
+				//parent.removeChild(cell);
+			});
+		} 
+	}
+
 	function putMark(indexNumber, element) {
 		if (switchTurn === true) {
 			board[indexNumber] = "X";
@@ -20,12 +32,10 @@ const gameBoard = (function() {
 		}
 	}
 
-	function generateBoard(selector) {
-		const emptyBoard = document.querySelector(selector);
-		const width = emptyBoard.offsetWidth;
-		const height = emptyBoard.offsetHeight;
+	function generateGrid(element) {
+		const width = element.offsetWidth;
+		const height = element.offsetHeight;
 		
-		const generateGrid = () => {
 			const squareWidth = width / 3;
 			const squareHeight = height / 3;
 			
@@ -34,25 +44,14 @@ const gameBoard = (function() {
 				square.style.width = squareWidth + "px";
 				square.style.height = squareHeight + "px";
 				square.setAttribute("class", "inner-squares");
+
+				const text = document.createElement("p");
+				square.textContent = board[i];
+				square.dataset.indexNumber = i;
+				square.appendChild(text);
 				
-				const markBoard = index => {
-					const text = document.createElement("p");
-					square.textContent = board[index];
-					
-					if (board[index] === "X") {
-						square.style.color = "#00AACC";
-					} else {
-						square.style.color = "#AA0000";
-					}
-					square.dataset.indexNumber = i;
-					square.appendChild(text);
-				};
-				markBoard(i);
-				
-				emptyBoard.appendChild(square);
+				element.appendChild(square);
 			}
-		};
-		generateGrid();
 	}
 
 	function checkAlignments() {
@@ -73,7 +72,7 @@ const gameBoard = (function() {
 				winner = true;
 				return "X";
 			}
-			else if (xCount === 3) {
+			else if (oCount === 3) {
 				winner = true;
 				return "O";
 			}
@@ -115,53 +114,105 @@ const gameBoard = (function() {
 		return [winner, victor];
 	}
 	
-	return {putMark, generateBoard, checkAlignments};
+	return {putMark, generateGrid, checkAlignments, clear,};
 })();
 
-function createPlayer(player) {
-	return {player};
-}
 
-const playerOne = createPlayer("player1");
-const playerTwo = createPlayer("player2");
+const game = (function () {
+	const playerOne = createPlayer("player1");
+	const playerTwo = createPlayer("player2");
 
-const gameContainer = document.querySelector(".gameboard");
-const welcomeMessage = document.createElement("p");
-const startButton = document.createElement("button");
-
-welcomeMessage.setAttribute("class", "welcome-message");
-welcomeMessage.textContent = "Welcome to tic tac toe, press start to play!";
-startButton.setAttribute("class", ".start-game");
-startButton.textContent = "Start Game"
-
-gameContainer.appendChild(welcomeMessage);
-gameContainer.appendChild(startButton);
-
-startButton.addEventListener("click", () => {
-
-	gameContainer.removeChild(welcomeMessage);
-	gameContainer.removeChild(startButton);
-	gameBoard.generateBoard(".gameboard");
-
-	let game = true;;
-	let round = 0;
-	const gridCells = document.querySelectorAll(".inner-squares");
-	gridCells.forEach(cell => {
-		function useTurn(e) {
-			let indexNumber = e.target.dataset.indexNumber;
-			gameBoard.putMark(indexNumber, cell);
+	const gameContainer = document.querySelector(".gameboard");
+	const welcomeMessage = document.createElement("p");
+	const startButton = document.createElement("button");
+	const names = document.createElement("form");
+	const playerOneName = document.createElement("input");
+	const playerTwoName = document.createElement("input");
+	const labelOne = document.createElement("label");
+	const labelTwo = document.createElement("label");
+	const playerOneSide = document.querySelector(".player-one-side");
+	const playerTwoSide = document.querySelector(".player-two-side");
+	const bottomContainer = document.querySelector(".vs");
 	
-			round++
-			winner = gameBoard.checkAlignments();
-			console.log(winner[0]);
-			cell.removeEventListener("click", useTurn);
-
-			if (winner[0] === true) {
-				cell.parentNode.innerHTML += '';
-				console.log(winner[1] + " Wins!");
+	welcomeMessage.setAttribute("class", "welcome-message");
+	welcomeMessage.textContent = "Welcome to tic tac toe, what are your names?";
+	startButton.setAttribute("class", ".start-game");
+	startButton.textContent = "Start";
+	labelOne.textContent = "Player One";
+	playerOneName.setAttribute("name", "playerOneName");
+	playerTwoName.setAttribute("name", "playerTwoName");
+	labelTwo.textContent = "Player Two";
+	
+	gameContainer.appendChild(welcomeMessage);
+	names.appendChild(labelOne);
+	names.appendChild(playerOneName);
+	names.appendChild(labelTwo);
+	names.appendChild(playerTwoName);
+	gameContainer.appendChild(names);
+	gameContainer.appendChild(startButton);
+	
+	function createPlayer(player, name, score=0) {
+		return {player, name, score};
+	}
+	
+	//Game start
+	startButton.addEventListener("click", (e) => {
+		const playerOne = createPlayer("player1", playerOneName.value);
+		const playerTwo = createPlayer("player2", playerTwoName.value);
+		playerOneSide.textContent = playerOne.name;
+		playerTwoSide.textContent = playerTwo.name;
+	
+		gameContainer.removeChild(welcomeMessage);
+		gameContainer.removeChild(startButton);
+		gameContainer.removeChild(names);
+	
+		gameBoard.generateGrid(gameContainer);
+	
+		let round = 0;
+		const gridCells = document.querySelectorAll(".inner-squares");
+		gridCells.forEach(cell => {
+			
+			function useTurn(e) {
+				let indexNumber = e.target.dataset.indexNumber;
+				gameBoard.putMark(indexNumber, cell);
+		
+				round++
+				winner = gameBoard.checkAlignments();
+				cell.removeEventListener("click", useTurn);
+	
+				if (winner[0] === true) {
+					cell.parentNode.innerHTML += '';
+					bottomContainer.textContent = winner[1] + " Wins!";
+					addRestart();
+				} else if (round === 9) {
+					bottomContainer.textContent = "It's a tie!";
+					addRestart();
+				}
 			}
-		}
-		cell.addEventListener("click", useTurn);
+	
+			function addRestart() {
+				const restartButton = document.createElement("button");
+				restartButton.setAttribute("class", "restart");
+				restartButton.textContent = "Restart";
+				bottomContainer.appendChild(restartButton);
+				const gridCells = document.querySelectorAll(".inner-squares");
+	
+				restartButton.addEventListener("click", () => {
+					gameBoard.clear(gridCells, round);
+					gameBoard.checkAlignments(); //To reset win status
+					bottomContainer.textContent = "";
+					restartButton.remove();
+	
+					//gridCells.forEach(cell => {
+						//cell.addEventListener("click", useTurn);
+					//});
+				});
+			}
+			
+			cell.addEventListener("click", useTurn);
+			
+		});
+	
 	});
-
-});
+	
+})();
