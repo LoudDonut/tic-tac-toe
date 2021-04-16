@@ -30,7 +30,7 @@ const gameBoard = (function() {
 			element.textContent = "O";
 			playerTwoTurn.textContent = "";
 			playerOneTurn.textContent = "*";
-			element.style.color = "#AA0000"
+			element.style.color = "#E80000"
 			switchTurn = true;
 		}
 	}
