@@ -1,9 +1,10 @@
 html {
-	background-color: #111111;
-	color: #EEEEEE;
+	background-color: #301014;
+	color: #EDF4ED;
 }
 
 h1 {
+	color: #EDF4ED;
 	font-size: 5em;
 	width: 5em;
 	margin-left: auto;
@@ -14,7 +15,7 @@ h1 {
 .gameboard {
 	display: flex;
 	flex-wrap: wrap;
-	background-color: #777777;
+	background-color: #301014;
 	width: 25em;
 	height: 25em;
 	margin-top: 10px;
@@ -43,6 +44,7 @@ form input {
 }
 
 .start-game {
+	background-color: #EDF4ED;
 	margin-bottom: 30px;
 	border-style: none;
 	font-size: 2em;
@@ -52,11 +54,12 @@ form input {
 }
 
 .inner-squares {
+	background-color: #301014;
 	border-style: solid;
-	border-color: #111111;
+	border-color: #EDF4ED;
 	border-width: 1px;
 	margin: -1px; /* The squares are calculated EXACTLY to fit so if 1px is added
-								1px has to be subtracted somewhere else in size */
+		1px has to be subtracted somewhere else in size */
 	font-size: 7em;
 	text-align: center;
 	border-radius: 3%;
@@ -66,7 +69,7 @@ form input {
 	padding-left: 10px;
 	font-size: 2.5em;
 	color: #00AACC;
-	background-color: #EEEEEE;
+	background-color: #301014;
 	position: absolute;
 	top: 25%;
 	width: 150px;
@@ -78,8 +81,8 @@ form input {
 	padding-right: 10px;
 	text-align: right;
 	font-size: 2.5em;
-	color: #AA0000;
-	background-color: #EEEEEE;
+	color: #E80000;
+	background-color: #301014;
 	position: absolute;
 	top: 25%;
 	right: 0px;
@@ -92,8 +95,8 @@ form input {
 	margin-top: 10px;
 	text-align: center;
 	font-size: 3em;
-	color: black;
-	background-color: #EEEEEE;
+	color: #EDF4ED;
+	background-color: #301014;
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
@@ -105,6 +108,6 @@ form input {
 
 .restart {
 	border-style: none;
-	background-color: #990099;
-	color: #EEEEEE;
+	background-color: #1C3041;
+	color: #EDF4ED;
 }
