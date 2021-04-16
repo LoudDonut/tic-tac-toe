@@ -126,12 +126,16 @@ const game = (function () {
 	const welcomeMessage = document.createElement("p");
 	const startButton = document.createElement("button");
 	const names = document.createElement("form");
-	const playerOneName = document.createElement("input");
-	const playerTwoName = document.createElement("input");
+	const playerOneInput = document.createElement("input");
+	const playerTwoInput = document.createElement("input");
 	const labelOne = document.createElement("label");
 	const labelTwo = document.createElement("label");
 	const playerOneSide = document.querySelector(".player-one-side");
+	const playerOneScore = document.querySelector("#player-one-score");
+	const playerOneName = document.querySelector("#player-one-name")
 	const playerTwoSide = document.querySelector(".player-two-side");
+	const playerTwoScore = document.querySelector("#player-two-score");
+	const playerTwoName = document.querySelector("#player-two-name");
 	const bottomContainer = document.querySelector(".vs");
 	
 	welcomeMessage.setAttribute("class", "welcome-message");
@@ -139,15 +143,15 @@ const game = (function () {
 	startButton.setAttribute("class", ".start-game");
 	startButton.textContent = "Start";
 	labelOne.textContent = "Player One";
-	playerOneName.setAttribute("name", "playerOneName");
-	playerTwoName.setAttribute("name", "playerTwoName");
+	playerOneInput.setAttribute("name", "playerOneName");
+	playerTwoInput.setAttribute("name", "playerTwoName");
 	labelTwo.textContent = "Player Two";
 	
 	gameContainer.appendChild(welcomeMessage);
 	names.appendChild(labelOne);
-	names.appendChild(playerOneName);
+	names.appendChild(playerOneInput);
 	names.appendChild(labelTwo);
-	names.appendChild(playerTwoName);
+	names.appendChild(playerTwoInput);
 	gameContainer.appendChild(names);
 	gameContainer.appendChild(startButton);
 	
@@ -155,64 +159,76 @@ const game = (function () {
 		return {player, name, score};
 	}
 	
-	//Game start
 	startButton.addEventListener("click", (e) => {
-		const playerOne = createPlayer("player1", playerOneName.value);
-		const playerTwo = createPlayer("player2", playerTwoName.value);
-		playerOneSide.textContent = playerOne.name;
-		playerTwoSide.textContent = playerTwo.name;
+		const playerOne = createPlayer("player1", playerOneInput.value);
+		const playerTwo = createPlayer("player2", playerTwoInput.value);
+		playerOneName.textContent = playerOne.name;
+		playerTwoName.textContent = playerTwo.name;
+		playerOneScore.textContent = playerOne.score;
+		playerTwoScore.textContent = playerTwo.score;
 	
 		gameContainer.removeChild(welcomeMessage);
 		gameContainer.removeChild(startButton);
 		gameContainer.removeChild(names);
 	
 		gameBoard.generateGrid(gameContainer);
-	
-		let round = 0;
-		const gridCells = document.querySelectorAll(".inner-squares");
-		gridCells.forEach(cell => {
-			
-			function useTurn(e) {
-				let indexNumber = e.target.dataset.indexNumber;
-				gameBoard.putMark(indexNumber, cell);
 		
-				round++
-				winner = gameBoard.checkAlignments();
-				cell.removeEventListener("click", useTurn);
-	
-				if (winner[0] === true) {
-					cell.parentNode.innerHTML += '';
-					bottomContainer.textContent = winner[1] + " Wins!";
-					addRestart();
-				} else if (round === 9) {
-					bottomContainer.textContent = "It's a tie!";
-					addRestart();
+		function startRound() {
+			let round = 0;
+			const gridCells = document.querySelectorAll(".inner-squares");
+			gridCells.forEach(cell => {
+				
+				function useTurn(e) {
+					let indexNumber = e.target.dataset.indexNumber;
+					gameBoard.putMark(indexNumber, cell);
+			
+					round++
+					winner = gameBoard.checkAlignments();
+					cell.removeEventListener("click", useTurn);
+		
+					if (winner[0] === true) {
+						cell.parentNode.innerHTML += '';
+						bottomContainer.textContent = winner[1] + " Wins!";
+						addScore(winner[1]);
+						addRestart();
+					} else if (round === 9) {
+						bottomContainer.textContent = "It's a tie!";
+						addRestart();
+					}
 				}
-			}
+		
+				function addRestart() {
+					const restartButton = document.createElement("button");
+					restartButton.setAttribute("class", "restart");
+					restartButton.textContent = "Play Round";
+					bottomContainer.appendChild(restartButton);
+					const gridCells = document.querySelectorAll(".inner-squares");
+		
+					restartButton.addEventListener("click", () => {
+						gameBoard.clear(gridCells, round);
+						gameBoard.checkAlignments(); //To reset win status
+						bottomContainer.textContent = "";
+						restartButton.remove();
+
+						startRound();
+					});
+				}
+
+				function addScore(player) {
+					if (player === "X") {
+						playerOne.score++
+						playerOneScore.textContent = playerOne.score;
+					} else {
+						playerTwo.score++
+						playerTwoScore.textContent = playerTwo.score;
+					}
+				}
+				
+				cell.addEventListener("click", useTurn);
+				
+			});
 	
-			function addRestart() {
-				const restartButton = document.createElement("button");
-				restartButton.setAttribute("class", "restart");
-				restartButton.textContent = "Restart";
-				bottomContainer.appendChild(restartButton);
-				const gridCells = document.querySelectorAll(".inner-squares");
-	
-				restartButton.addEventListener("click", () => {
-					gameBoard.clear(gridCells, round);
-					gameBoard.checkAlignments(); //To reset win status
-					bottomContainer.textContent = "";
-					restartButton.remove();
-	
-					//gridCells.forEach(cell => {
-						//cell.addEventListener("click", useTurn);
-					//});
-				});
-			}
-			
-			cell.addEventListener("click", useTurn);
-			
-		});
-	
+		}
+		startRound();
 	});
-	
 })();
