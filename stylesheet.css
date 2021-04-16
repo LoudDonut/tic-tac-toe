@@ -10,14 +10,45 @@ h1 {
 	margin-right: auto;
 }
 
+
 .gameboard {
 	display: flex;
 	flex-wrap: wrap;
 	background-color: #777777;
 	width: 25em;
 	height: 25em;
+	margin-top: 10px;
 	margin-left: auto;
 	margin-right: auto;
+	border-radius: 1%;
+	justify-content: center;
+}
+
+.welcome-message {
+	margin-top: 9px;
+	font-size: 2em;
+	text-align: center;
+	height: 2.5em;
+}
+
+form {
+	font-size: 1.5em;
+	height: 8em;
+}
+
+form input {
+	padding: 0px 0px 0px 0px;
+	margin: 25px 5px 0px 5px;
+	width: 8em;
+}
+
+.start-game {
+	margin-bottom: 30px;
+	border-style: none;
+	font-size: 2em;
+	width: 10em;
+	height: 3em;
+	border-radius: 2%;
 }
 
 .inner-squares {
@@ -28,40 +59,48 @@ h1 {
 								1px has to be subtracted somewhere else in size */
 	font-size: 7em;
 	text-align: center;
-}
-
-.start-game {
-	border-style: none;
+	border-radius: 3%;
 }
 
 .player-one-side { /*will light up on player turn */
-	color: #000000;
+	padding-left: 10px;
+	font-size: 2.5em;
+	color: #00AACC;
 	background-color: #EEEEEE;
 	position: absolute;
 	top: 25%;
-	width: 10em;
-	height: 10em;
+	width: 150px;
+	height: 150px;
+	border-radius: 2%;
 }
 
 .player-two-side {
-	color: #000000;
+	padding-right: 10px;
+	text-align: right;
+	font-size: 2.5em;
+	color: #AA0000;
 	background-color: #EEEEEE;
 	position: absolute;
 	top: 25%;
 	right: 0px;
-	width: 10em;
-	height: 10em;
+	width: 150px;
+	height: 150px;
+	border-radius: 2%;
 }
 
 .vs {
+	margin-top: 10px;
+	text-align: center;
+	font-size: 3em;
 	color: black;
 	background-color: #EEEEEE;
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
 	bottom: 0px;
-	width: 10em;
-	height: 10em;
+	width: 150px;
+	height: 150px;
+	border-radius: 2%;
 }
 
 .restart {
