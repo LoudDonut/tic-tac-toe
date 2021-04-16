@@ -13,20 +13,23 @@ const gameBoard = (function() {
 					"", "", ""];
 			element.forEach(cell => {
 				cell.textContent = "";
-				//parent.removeChild(cell);
 			});
 		} 
 	}
 
-	function putMark(indexNumber, element) {
+	function putMark(indexNumber, element, playerOneTurn, playerTwoTurn) {
 		if (switchTurn === true) {
 			board[indexNumber] = "X";
 			element.textContent = "X";
+			playerOneTurn.textContent = "";
+			playerTwoTurn.textContent = "*";
 			element.style.color = "#00AACC"
 			switchTurn = false;
 		} else {
 			board[indexNumber] = "O";
 			element.textContent = "O";
+			playerTwoTurn.textContent = "";
+			playerOneTurn.textContent = "*";
 			element.style.color = "#AA0000"
 			switchTurn = true;
 		}
@@ -133,19 +136,21 @@ const game = (function () {
 	const playerOneSide = document.querySelector(".player-one-side");
 	const playerOneScore = document.querySelector("#player-one-score");
 	const playerOneName = document.querySelector("#player-one-name")
+	const playerOneTurn = document.querySelector("#player-one-turn");
 	const playerTwoSide = document.querySelector(".player-two-side");
 	const playerTwoScore = document.querySelector("#player-two-score");
+	const playerTwoTurn = document.querySelector("#player-two-turn");
 	const playerTwoName = document.querySelector("#player-two-name");
 	const bottomContainer = document.querySelector(".vs");
 	
 	welcomeMessage.setAttribute("class", "welcome-message");
 	welcomeMessage.textContent = "Welcome to tic tac toe, what are your names?";
-	startButton.setAttribute("class", ".start-game");
+	startButton.setAttribute("class", "start-game");
 	startButton.textContent = "Start";
-	labelOne.textContent = "Player One";
+	labelOne.textContent = "Player:";
 	playerOneInput.setAttribute("name", "playerOneName");
 	playerTwoInput.setAttribute("name", "playerTwoName");
-	labelTwo.textContent = "Player Two";
+	labelTwo.textContent = "Player:";
 	
 	gameContainer.appendChild(welcomeMessage);
 	names.appendChild(labelOne);
@@ -166,6 +171,7 @@ const game = (function () {
 		playerTwoName.textContent = playerTwo.name;
 		playerOneScore.textContent = playerOne.score;
 		playerTwoScore.textContent = playerTwo.score;
+		playerOneTurn.textContent = "*";
 	
 		gameContainer.removeChild(welcomeMessage);
 		gameContainer.removeChild(startButton);
@@ -180,8 +186,9 @@ const game = (function () {
 				
 				function useTurn(e) {
 					let indexNumber = e.target.dataset.indexNumber;
-					gameBoard.putMark(indexNumber, cell);
-			
+					gameBoard.putMark(indexNumber, cell, playerOneTurn,
+						playerTwoTurn);
+
 					round++
 					winner = gameBoard.checkAlignments();
 					cell.removeEventListener("click", useTurn);
